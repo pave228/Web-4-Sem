@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <style>
+        .modalButtonC {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            width: 400px;
+            height: 50px;
+            font-size: 20px;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            border-color: red;
+            box-shadow: 0 0 5px 3px red;
+        }
+
+        .requestButtonC{
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            width: 400px;
+            height: 50px;
+            font-size: 20px;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            border-color: red;
+            box-shadow: 0 0 5px 3px red;
+        }
+
+        .formBG {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: #00000050;
+        }
+
+        .FormC {
+            background-color: white;
+            width: 300px;
+            height: 350px;
+            margin: auto;
+            text-align: center;
+            border-style: solid;
+            border-color: red;
+            box-shadow: 0 0 5px 3px red;
+        }
+
+        input:invalid {
+            border-color: red;
+            box-shadow: 0 0 5px 1px red;
+        }
+    </style>
+
+    <h1>Гнатенко Павел - Лабораторная работа №3</h1>
+    <button id="modalButton" class="modalButtonC">Открыть модальное окно</button>
+    <button id="APIButton" class="requestButtonC">Послать запрос</button>
+
+    <div id="modalForm" class="formBG">
+        <div class="FormC">
+            <form method="post" action="/download">
+                <p>Электронная почта</p>
+                <input type="email" id="email" required>
+                <p>Пароль</p>
+                <input type="password" minlength="4" maxlength="10" id="password" required>
+                <p> <input type="radio" value="Я согласен с договором" name="agreementTreaty" id="agreement1" required>Я согласен с договором</p>
+                <p> <input type="radio" value="Даю согласие на обработку персональных данных" name="agreementData" id="agreement2" required>Даю согласие на обработку персональных данных</p>
+                <p><input id="SendButton" type="submit"></p>
+                <p><button type="button" id="CloseButton">Закрыть</button></p>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    let modalF = document.getElementById("modalForm");
+    document.getElementById("modalButton").onclick = function () {
+        modalF.style.display = "block";
+        document.body.style.overflow = 'hidden';
+    }
+    let closeForm = function (e) {
+        document.body.style.overflow = 'visible';
+        modalF.style.display = "none";
+        return false;
+    }
+    document.getElementById("CloseButton").onclick = closeForm;
+    modalF.onclick = function (e) {
+        if (e && e.target == modalF) {
+            document.body.style.overflow = 'visible';
+            modalF.style.display = "none";
+            return false;
+        }
+
+    };
+    document.getElementById("SendButton").onclick = function (e) {
+
+        if (document.getElementById("email").validity.valid
+            && document.getElementById("password").validity.valid
+            && document.getElementById("agreement1").validity.valid
+            && document.getElementById("agreement2").validity.valid) {
+            let formList = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value,
+                agreementTreaty: document.getElementById("agreement1").value,
+                agreementData: document.getElementById("agreement2").value
+            };
+            console.table(formList);
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    document.getElementById("email").onblur = function (e) {
+        if (document.getElementById("email").validity.typeMismatch) {
+            document.getElementById("email").setCustomValidity("Incorrect type")
+        }
+        else if (document.getElementById("email").validity.valueMissing) {
+            document.getElementById("email").setCustomValidity("Please fill out this field")
+        }
+        else {
+            document.getElementById("email").setCustomValidity('');
+        }
+        document.getElementById("email").reportValidity();
+
+    }
+    document.getElementById("password").onblur = function (e) {
+        if (document.getElementById("password").validity.valueMissing) {
+            document.getElementById("password").setCustomValidity("Please fill out this field")
+        }
+        else if (document.getElementById("password").validity.tooShort) {
+            document.getElementById("password").setCustomValidity("Too weak password")
+        }
+        else if (document.getElementById("password").validity.tooLong) {
+            document.getElementById("password").setCustomValidity("Too strong password")
+        }
+        else {
+            document.getElementById("password").setCustomValidity('');
+        }
+        document.getElementById("password").reportValidity();
+    }
+    document.getElementById("agreement1").onblur = function (e) {
+        if (document.getElementById("agreement1").validity.valueMissing) {
+            document.getElementById("agreement1").setCustomValidity("We need your agreement to move on")
+        }
+        else {
+            document.getElementById("agreement1").setCustomValidity('');
+        }
+        document.getElementById("agreement1").reportValidity();
+    }
+    document.getElementById("agreement2").onblur = function (e) {
+        if (document.getElementById("agreement2").validity.valueMissing) {
+            document.getElementById("agreement2").setCustomValidity("We need your agreement to move on")
+        }
+        else {
+            document.getElementById("agreement2").setCustomValidity('');
+        }
+        document.getElementById("agreement2").reportValidity();
+    }
+
+
+</script>
+
+</html>
